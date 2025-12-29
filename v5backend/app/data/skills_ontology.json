@@ -1,0 +1,22 @@
+{
+  "skills": [
+    {"name": "python", "aliases": ["py", "python3", "python 3", "python 2"]},
+    {"name": "java", "aliases": ["jdk", "jre"]},
+    {"name": "javascript", "aliases": ["js", "nodejs", "node.js", "node"]},
+    {"name": "typescript", "aliases": ["ts"]},
+    {"name": "sql", "aliases": ["postgres", "mysql", "mssql", "sqlite"]},
+    {"name": "aws", "aliases": ["amazon web services", "ec2", "s3", "lambda"]},
+    {"name": "azure", "aliases": ["microsoft azure"]},
+    {"name": "gcp", "aliases": ["google cloud", "google cloud platform"]},
+    {"name": "docker", "aliases": ["containers"]},
+    {"name": "kubernetes", "aliases": ["k8s"]},
+    {"name": "react", "aliases": ["reactjs", "react.js"]},
+    {"name": "vue", "aliases": ["vuejs", "vue.js"]},
+    {"name": "django", "aliases": []},
+    {"name": "flask", "aliases": []},
+    {"name": "pandas", "aliases": []},
+    {"name": "keras", "aliases": []},
+    {"name": "pytorch", "aliases": ["torch"]},
+    {"name": "tensorflow", "aliases": ["tf"]}
+  ]
+}

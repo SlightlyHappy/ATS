@@ -1,0 +1,38 @@
+# Railway ignore file for backend directory
+
+# Development and runtime directories
+logs/
+processed/
+uploads/
+resume_storage/
+venv/
+__pycache__/
+.env
+.env.example
+
+# Test files
+test_*.py
+
+# Large data files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Encrypted files (should use environment variables instead)
+api_keys.enc

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.*
+
+# VSCode
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+*.so
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Local data
+/data/
+
+# Ollama models cache (if ever bound locally)
+.ollama/
+
+# Migrations cache
+alembic.ini.lock
+
+# Coverage
+.coverage
+htmlcov/

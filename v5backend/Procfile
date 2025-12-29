@@ -1,0 +1,11 @@
+# Railway Production Process Configuration
+# Optimized for Railway cloud platform deployment
+
+# API Server - Railway web service (main entry point)
+web: ROLE=api ./entrypoint.sh
+
+# Celery Worker - Railway worker service (background processing)
+worker: ROLE=worker ./entrypoint.sh
+
+# Celery Beat Scheduler - Railway cron service (periodic tasks)
+beat: ROLE=beat ./entrypoint.sh

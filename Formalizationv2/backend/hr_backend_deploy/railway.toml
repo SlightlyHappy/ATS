@@ -1,0 +1,65 @@
+# Railway Configuration - Enhanced Backend
+# This file tells Railway how to build and deploy the application
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "python railway_start.py"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[env]
+NIXPACKS_PYTHON_VERSION = "3.11"
+
+# Production Environment Variables
+FLASK_ENV = "production"
+PYTHONPATH = "/app"
+PYTHONUNBUFFERED = "1"
+
+# Default AI Configuration (will use available providers)
+DEFAULT_AI_PROVIDER = "openai"
+
+# Performance Settings for Railway
+MAX_CONCURRENT_PROCESSING = "2"
+CHUNK_SIZE = "1"
+MAX_MEMORY_CACHE_SIZE = "100"
+MEMORY_WARNING_THRESHOLD = "0.8"
+
+# Enhanced Feature Flags
+ENABLE_AGENTIC_ANALYSIS = "true"
+ENABLE_MARKET_SCORING = "true"
+ENABLE_BATCH_PROCESSING = "true"
+ENABLE_EMAIL_TEMPLATES = "true"
+HR_LEGAL_ENABLED = "false"
+ENABLE_RATE_LIMITING = "true"
+ENABLE_SECURITY_HEADERS = "true"
+ENABLE_METRICS = "true"
+ENABLE_HEALTH_CHECKS = "true"
+
+# Storage Configuration
+ENABLE_PERSISTENT_STORAGE = "true"
+ENABLE_DISK_CACHE = "true"
+COMPRESS_PROCESSED_FILES = "true"
+MAX_FILE_AGE_HOURS = "24"
+
+# Trial System Configuration
+DEFAULT_TRIAL_LIMIT = "100"
+DEFAULT_TRIAL_DAYS = "30"
+
+# Logging Configuration
+LOG_LEVEL = "INFO"
+ENABLE_STRUCTURED_LOGGING = "false"
+
+# Security Configuration
+BCRYPT_LOG_ROUNDS = "12"
+JWT_EXPIRATION_DELTA = "7200"
+
+# File Processing
+MAX_CONTENT_LENGTH = "16777216"  # 16MB
+MAX_FILE_SIZE = "10485760"       # 10MB
+
+# CORS Configuration
+FRONTEND_URL = "https://hrtool-sable.vercel.app"

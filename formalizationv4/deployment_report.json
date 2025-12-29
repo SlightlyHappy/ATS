@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-05T18:39:13.425070",
+  "base_url": "https://determined-harmony-production.up.railway.app",
+  "verification_status": "failed",
+  "admin_credentials": {
+    "email": "admin@bearsystems.co.in",
+    "password_set": false
+  },
+  "environment_variables": {
+    "FLASK_ENV": null,
+    "SERVICE_TYPE": null,
+    "RAILWAY_ENVIRONMENT": null,
+    "DATABASE_URL": false,
+    "OLLAMA_URL": false
+  }
+}

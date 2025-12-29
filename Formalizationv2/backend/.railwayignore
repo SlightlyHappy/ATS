@@ -1,0 +1,68 @@
+# Railway Ignore - Exclude large files during deployment
+
+# Python cache and bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+
+# Large AI/ML model files
+*.safetensors
+*.pkl
+*.bin
+*.pt
+*.pth
+*.onnx
+*.model
+
+# PyTorch/CUDA binaries (will be installed fresh)
+torch_*.dll
+*cuda*.dll
+*cudnn*.dll
+*cublas*.dll
+*cusparse*.dll
+*cufft*.dll
+dnnl.lib
+
+# Development files
+.env.local
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+/tmp/
+/temp/
+*.tmp
+*.temp
+
+# Upload directories
+/uploads/
+/processed/
+/logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large knowledge base (handled separately)
+HRlaw/
+
+# Testing files
+test_*
+sample_*
+debug_*
+
+# Cache directories
+.cache/
+.pytest_cache/

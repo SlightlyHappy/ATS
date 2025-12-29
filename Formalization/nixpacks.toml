@@ -1,0 +1,32 @@
+# Nixpacks Configuration for Bear Systems ATS
+[variables]
+NIXPACKS_NODE_VERSION = "18"
+NIXPACKS_PYTHON_VERSION = "3.11"
+
+[phases.setup]
+nixPkgs = [
+  "nodejs-18_x", 
+  "python311", 
+  "python311Packages.pip",
+  "tesseract",
+  "poppler_utils",
+  "imagemagick",
+  "pkg-config"
+]
+
+[phases.install]
+cmds = [
+  "cd frontend && npm ci --only=production",
+  "cd backend && pip install -r requirements.railway.txt"
+]
+
+[phases.build]
+cmds = [
+  "cd frontend && npm run build"
+]
+
+[start]
+cmd = "cd backend && python start.py"
+
+[staticAssets]
+"frontend/build" = "/"

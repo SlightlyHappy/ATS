@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analysis - Live Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-connected { background-color: #4CAF50; }
+        .status-disconnected { background-color: #f44336; }
+        .status-pending { background-color: #ff9800; }
+        .log {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .log-info { background-color: #e3f2fd; }
+        .log-success { background-color: #e8f5e8; }
+        .log-warning { background-color: #fff3e0; }
+        .log-error { background-color: #ffebee; }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #5a6fd8;
+        }
+        .queue-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f9f9f9;
+        }
+        .queue-item.processing {
+            background: #fff3e0;
+            border-color: #ff9800;
+        }
+        .queue-item.completed {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Resume Analysis - Live Dashboard</h1>
+            <p>Real-time queue monitoring with WebSocket updates</p>
+            <div>
+                <span class="status-indicator" id="connectionStatus"></span>
+                <span id="connectionText">Connecting...</span>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <!-- Connection Status -->
+            <div class="card">
+                <h3>Connection Status</h3>
+                <div>
+                    <strong>Session ID:</strong> <span id="sessionId">-</span><br>
+                    <strong>User Type:</strong> <span id="userType">-</span><br>
+                    <strong>Connected At:</strong> <span id="connectedAt">-</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <input type="text" id="userIdInput" placeholder="Enter User ID" style="width: 200px; padding: 5px;">
+                    <select id="userTypeSelect" style="padding: 5px;">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <button class="button" onclick="authenticate()">Authenticate</button>
+                </div>
+            </div>
+
+            <!-- System Statistics -->
+            <div class="card">
+                <h3>System Statistics</h3>
+                <div>
+                    <div>Pending: <span class="stat-value" id="pendingCount">0</span></div>
+                    <div>Processing: <span class="stat-value" id="processingCount">0</span></div>
+                    <div>Completed Today: <span class="stat-value" id="completedCount">0</span></div>
+                    <div>Connected Users: <span class="stat-value" id="connectedUsers">0</span></div>
+                </div>
+                <button class="button" onclick="requestStats()">Refresh Stats</button>
+            </div>
+
+            <!-- Queue Status -->
+            <div class="card">
+                <h3>Current Queue</h3>
+                <div id="queueItems">
+                    <p>No queue items to display</p>
+                </div>
+                <button class="button" onclick="requestQueueStatus()">Refresh Queue</button>
+            </div>
+
+            <!-- Push Notifications -->
+            <div class="card">
+                <h3>Push Notifications</h3>
+                <p>Enable browser notifications to receive alerts when analyses complete.</p>
+                <button class="button" onclick="requestNotificationPermission()">Enable Notifications</button>
+                <button class="button" onclick="testNotification()">Test Notification</button>
+                <div>
+                    <strong>Status:</strong> <span id="notificationStatus">Unknown</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Activity Log -->
+        <div class="card">
+            <h3>Live Activity Log</h3>
+            <button class="button" onclick="clearLog()">Clear Log</button>
+            <div id="activityLog" class="log"></div>
+        </div>
+
+        <!-- Test Controls (Admin) -->
+        <div class="card" id="adminControls" style="display: none;">
+            <h3>Admin Controls</h3>
+            <div>
+                <input type="text" id="testMessage" placeholder="Test broadcast message" style="width: 300px; padding: 5px;">
+                <button class="button" onclick="sendTestBroadcast()">Send Broadcast</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="button" onclick="refreshDashboard()">Refresh All Dashboards</button>
+                <button class="button" onclick="requestDashboardData()">Get Dashboard Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification container -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        let socket;
+        let authenticated = false;
+        let currentUserId = null;
+        let currentUserType = null;
+
+        // Initialize Socket.IO connection
+        function initializeSocket() {
+            socket = io();
+
+            socket.on('connect', function() {
+                log('Connected to server', 'success');
+                updateConnectionStatus('connected');
+                document.getElementById('sessionId').textContent = socket.id;
+                document.getElementById('connectedAt').textContent = new Date().toLocaleString();
+            });
+
+            socket.on('disconnect', function() {
+                log('Disconnected from server', 'error');
+                updateConnectionStatus('disconnected');
+                authenticated = false;
+            });
+
+            socket.on('connected', function(data) {
+                log(`Connection confirmed: ${data.session_id}`, 'info');
+            });
+
+            socket.on('authenticated', function(data) {
+                log(`Authenticated as ${data.user_type}: ${data.user_id}`, 'success');
+                authenticated = true;
+                currentUserId = data.user_id;
+                currentUserType = data.user_type;
+                document.getElementById('userType').textContent = data.user_type;
+                
+                // Show admin controls if admin
+                if (data.user_type === 'admin') {
+                    document.getElementById('adminControls').style.display = 'block';
+                }
+                
+                // Request initial data
+                requestStats();
+                requestQueueStatus();
+            });
+
+            socket.on('auth_error', function(data) {
+                log(`Authentication error: ${data.error}`, 'error');
+                authenticated = false;
+            });
+
+            socket.on('queue_item_update', function(data) {
+                log(`Queue update: ${data.queue_id} -> ${data.status}`, 'info');
+                updateQueueDisplay(data);
+            });
+
+            socket.on('queue_update', function(data) {
+                log(`Global queue update: ${data.status}`, 'info');
+            });
+
+            socket.on('analysis_completed', function(data) {
+                log(`Analysis completed: ${data.analysis_id}`, 'success');
+                showNotification('Analysis Complete', `Resume analysis is ready!`);
+            });
+
+            socket.on('batch_update', function(data) {
+                log(`Batch update: ${data.batch_id} - ${data.progress}%`, 'info');
+            });
+
+            socket.on('push_notification', function(data) {
+                showBrowserNotification(data);
+            });
+
+            socket.on('system_alert', function(data) {
+                log(`System alert: ${data.message}`, data.level);
+                showNotification('System Alert', data.message);
+            });
+
+            socket.on('dashboard_data_update', function(data) {
+                log('Dashboard data updated', 'info');
+                updateStats(data);
+            });
+
+            socket.on('error', function(data) {
+                log(`Error: ${data.error}`, 'error');
+            });
+        }
+
+        function updateConnectionStatus(status) {
+            const indicator = document.getElementById('connectionStatus');
+            const text = document.getElementById('connectionText');
+            
+            indicator.className = 'status-indicator';
+            if (status === 'connected') {
+                indicator.classList.add('status-connected');
+                text.textContent = 'Connected';
+            } else {
+                indicator.classList.add('status-disconnected');
+                text.textContent = 'Disconnected';
+            }
+        }
+
+        function authenticate() {
+            const userId = document.getElementById('userIdInput').value;
+            const userType = document.getElementById('userTypeSelect').value;
+            
+            if (!userId) {
+                alert('Please enter a User ID');
+                return;
+            }
+
+            socket.emit('authenticate', {
+                user_id: userId,
+                user_type: userType
+            });
+        }
+
+        function requestStats() {
+            if (authenticated) {
+                socket.emit('request_queue_status', { user_id: currentUserId });
+            }
+            
+            // Also fetch via REST API
+            fetch('/api/v1/websocket/stats')
+                .then(response => response.json())
+                .then(data => updateStats(data))
+                .catch(error => log(`Error fetching stats: ${error}`, 'error'));
+        }
+
+        function requestQueueStatus() {
+            if (authenticated) {
+                socket.emit('request_queue_status', { user_id: currentUserId });
+            }
+        }
+
+        function requestDashboardData() {
+            if (authenticated && currentUserType === 'admin') {
+                socket.emit('request_dashboard_data');
+            }
+        }
+
+        function updateStats(data) {
+            if (data.queue) {
+                document.getElementById('pendingCount').textContent = data.queue.pending || 0;
+                document.getElementById('processingCount').textContent = data.queue.processing || 0;
+                document.getElementById('completedCount').textContent = data.queue.completed_today || 0;
+            }
+            if (data.websocket) {
+                document.getElementById('connectedUsers').textContent = data.websocket.total_sessions || 0;
+            }
+        }
+
+        function updateQueueDisplay(queueData) {
+            // This would typically update a more sophisticated queue display
+            log(`Queue item ${queueData.queue_id} updated to ${queueData.status}`, 'info');
+        }
+
+        function sendTestBroadcast() {
+            const message = document.getElementById('testMessage').value || 'Test broadcast message';
+            
+            fetch('/api/v1/websocket/broadcast/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    type: 'test',
+                    level: 'info'
+                })
+            })
+            .then(response => response.json())
+            .then(data => log(`Broadcast sent: ${data.message}`, 'success'))
+            .catch(error => log(`Error sending broadcast: ${error}`, 'error'));
+        }
+
+        function refreshDashboard() {
+            fetch('/api/v1/websocket/dashboard/refresh', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => log(`Dashboard refresh: ${data.message}`, 'success'))
+            .catch(error => log(`Error refreshing dashboard: ${error}`, 'error'));
+        }
+
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    document.getElementById('notificationStatus').textContent = permission;
+                    log(`Notification permission: ${permission}`, 'info');
+                });
+            } else {
+                log('Notifications not supported', 'error');
+                document.getElementById('notificationStatus').textContent = 'Not supported';
+            }
+        }
+
+        function testNotification() {
+            showBrowserNotification({
+                title: 'Test Notification',
+                body: 'This is a test notification from the AI Resume Analysis system',
+                icon: '/static/icon-192x192.png'
+            });
+        }
+
+        function showBrowserNotification(data) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notification = new Notification(data.title, {
+                    body: data.body,
+                    icon: data.icon || '/static/icon-192x192.png',
+                    tag: 'resume-analysis'
+                });
+
+                notification.onclick = function() {
+                    window.focus();
+                    if (data.data && data.data.url) {
+                        window.location.href = data.data.url;
+                    }
+                    notification.close();
+                };
+
+                // Auto close after 5 seconds
+                setTimeout(() => notification.close(), 5000);
+            }
+        }
+
+        function showNotification(title, message) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `<strong>${title}</strong><br>${message}`;
+            
+            container.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // Hide and remove notification
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => container.removeChild(notification), 300);
+            }, 4000);
+        }
+
+        function log(message, level = 'info') {
+            const logElement = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${level}`;
+            entry.innerHTML = `<span style="color: #666;">${new Date().toLocaleTimeString()}</span> ${message}`;
+            
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('activityLog').innerHTML = '';
+        }
+
+        // Initialize everything when page loads
+        window.onload = function() {
+            initializeSocket();
+            
+            // Check notification permission status
+            if ('Notification' in window) {
+                document.getElementById('notificationStatus').textContent = Notification.permission;
+            } else {
+                document.getElementById('notificationStatus').textContent = 'Not supported';
+            }
+            
+            log('Dashboard initialized', 'info');
+        };
+    </script>
+</body>
+</html>

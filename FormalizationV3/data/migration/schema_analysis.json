@@ -1,0 +1,969 @@
+{
+  "tables": {
+    "admin_users": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "username",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "permissions",
+          "type": "TEXT",
+          "nullable": true,
+          "default": "'[\"all\"]'",
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": "'active'",
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE admin_users (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        username VARCHAR(255) UNIQUE NOT NULL,\n                        email VARCHAR(255) UNIQUE,\n                        password_hash VARCHAR(255) NOT NULL,\n                        name VARCHAR(255),\n                        permissions TEXT DEFAULT '[\"all\"]',\n                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        last_login TIMESTAMP,\n                        status VARCHAR(50) DEFAULT 'active'\n                    )",
+      "row_count": 1
+    },
+    "users": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "supabase_id",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "access_type",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": "'trial'",
+          "primary_key": false
+        },
+        {
+          "name": "trial_resumes_analyzed",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "0",
+          "primary_key": false
+        },
+        {
+          "name": "trial_legal_queries",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "0",
+          "primary_key": false
+        },
+        {
+          "name": "trial_resume_limit",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "100",
+          "primary_key": false
+        },
+        {
+          "name": "trial_legal_limit",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "50",
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "created_by_admin",
+          "type": "VARCHAR(255)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(50)",
+          "nullable": true,
+          "default": "'active'",
+          "primary_key": false
+        },
+        {
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "metadata",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE users (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    supabase_id VARCHAR(255) UNIQUE,\n                    email VARCHAR(255) UNIQUE NOT NULL,\n                    name VARCHAR(255) NOT NULL,\n                    password_hash VARCHAR(255),\n                    access_type VARCHAR(50) DEFAULT 'trial',\n                    trial_resumes_analyzed INTEGER DEFAULT 0,\n                    trial_legal_queries INTEGER DEFAULT 0,\n                    trial_resume_limit INTEGER DEFAULT 100,\n                    trial_legal_limit INTEGER DEFAULT 50,\n                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    created_by_admin VARCHAR(255),\n                    status VARCHAR(50) DEFAULT 'active',\n                    last_login TIMESTAMP,\n                    metadata TEXT\n                )",
+      "row_count": 1
+    },
+    "user_sessions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "session_token",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "user_agent",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": "TRUE",
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE user_sessions (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    user_id INTEGER NOT NULL,\n                    session_token VARCHAR(255) UNIQUE NOT NULL,\n                    expires_at TIMESTAMP NOT NULL,\n                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    ip_address VARCHAR(45),\n                    user_agent TEXT,\n                    is_active BOOLEAN DEFAULT TRUE,\n                    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE\n                )",
+      "row_count": 0
+    },
+    "admin_sessions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "admin_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "session_token",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "user_agent",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": "TRUE",
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE admin_sessions (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    admin_id INTEGER NOT NULL,\n                    session_token VARCHAR(255) UNIQUE NOT NULL,\n                    expires_at TIMESTAMP NOT NULL,\n                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    ip_address VARCHAR(45),\n                    user_agent TEXT,\n                    is_active BOOLEAN DEFAULT TRUE,\n                    FOREIGN KEY (admin_id) REFERENCES admin_users (id) ON DELETE CASCADE\n                )",
+      "row_count": 0
+    },
+    "system_analytics": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "metric_name",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "metric_value",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "metadata",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE system_analytics (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    metric_name VARCHAR(255) NOT NULL,\n                    metric_value TEXT NOT NULL,\n                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    metadata TEXT\n                )",
+      "row_count": 0
+    },
+    "api_usage": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "admin_id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "endpoint",
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "method",
+          "type": "VARCHAR(10)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "status_code",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "response_time_ms",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "user_agent",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE api_usage (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    user_id INTEGER,\n                    admin_id INTEGER,\n                    endpoint VARCHAR(255) NOT NULL,\n                    method VARCHAR(10) NOT NULL,\n                    status_code INTEGER,\n                    response_time_ms INTEGER,\n                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                    ip_address VARCHAR(45),\n                    user_agent TEXT\n                )",
+      "row_count": 0
+    },
+    "user_credits": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "trial_credits",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "100",
+          "primary_key": false
+        },
+        {
+          "name": "premium_credits",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "0",
+          "primary_key": false
+        },
+        {
+          "name": "total_used",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "0",
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "last_used",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "is_trial_exhausted",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": "FALSE",
+          "primary_key": false
+        },
+        {
+          "name": "sales_contacted",
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": "FALSE",
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE user_credits (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        user_id INTEGER NOT NULL,\n                        trial_credits INTEGER DEFAULT 100,\n                        premium_credits INTEGER DEFAULT 0,\n                        total_used INTEGER DEFAULT 0,\n                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        last_used TIMESTAMP,\n                        is_trial_exhausted BOOLEAN DEFAULT FALSE,\n                        sales_contacted BOOLEAN DEFAULT FALSE,\n                        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,\n                        UNIQUE(user_id)\n                    )",
+      "row_count": 1
+    },
+    "credit_transactions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "transaction_type",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "credit_type",
+          "type": "VARCHAR(20)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "balance_after",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "metadata",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE credit_transactions (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        user_id INTEGER NOT NULL,\n                        transaction_type VARCHAR(20) NOT NULL,\n                        credit_type VARCHAR(20) NOT NULL,\n                        amount INTEGER NOT NULL,\n                        balance_after INTEGER NOT NULL,\n                        description TEXT,\n                        metadata TEXT,\n                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE\n                    )",
+      "row_count": 3
+    },
+    "usage_analytics": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "feature_used",
+          "type": "VARCHAR(50)",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "credits_consumed",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "1",
+          "primary_key": false
+        },
+        {
+          "name": "processing_tier",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "session_data",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE usage_analytics (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        user_id INTEGER NOT NULL,\n                        feature_used VARCHAR(50) NOT NULL,\n                        credits_consumed INTEGER DEFAULT 1,\n                        processing_tier VARCHAR(20),\n                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        session_data TEXT,\n                        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE\n                    )",
+      "row_count": 2
+    },
+    "sales_intelligence": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "lead_score",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": "0",
+          "primary_key": false
+        },
+        {
+          "name": "qualification_status",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": "'new'",
+          "primary_key": false
+        },
+        {
+          "name": "usage_pattern",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "last_activity",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "sales_notes",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "follow_up_scheduled",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "contacted_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE sales_intelligence (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        user_id INTEGER NOT NULL,\n                        lead_score INTEGER DEFAULT 0,\n                        qualification_status VARCHAR(20) DEFAULT 'new',\n                        usage_pattern TEXT,\n                        last_activity TIMESTAMP,\n                        sales_notes TEXT,\n                        follow_up_scheduled TIMESTAMP,\n                        contacted_at TIMESTAMP,\n                        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,\n                        UNIQUE(user_id)\n                    )",
+      "row_count": 1
+    },
+    "payment_transactions": {
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "primary_key": true
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "payment_provider",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": "'razorpay'",
+          "primary_key": false
+        },
+        {
+          "name": "payment_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "order_id",
+          "type": "VARCHAR(100)",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "amount_inr",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "credits_purchased",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "payment_status",
+          "type": "VARCHAR(20)",
+          "nullable": true,
+          "default": "'pending'",
+          "primary_key": false
+        },
+        {
+          "name": "verified_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "primary_key": false
+        },
+        {
+          "name": "metadata",
+          "type": "TEXT",
+          "nullable": true,
+          "default": null,
+          "primary_key": false
+        }
+      ],
+      "create_sql": "CREATE TABLE payment_transactions (\n                        id INTEGER PRIMARY KEY AUTOINCREMENT,\n                        user_id INTEGER NOT NULL,\n                        payment_provider VARCHAR(20) DEFAULT 'razorpay',\n                        payment_id VARCHAR(100),\n                        order_id VARCHAR(100),\n                        amount_inr INTEGER NOT NULL,\n                        credits_purchased INTEGER NOT NULL,\n                        payment_status VARCHAR(20) DEFAULT 'pending',\n                        verified_at TIMESTAMP,\n                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n                        metadata TEXT,\n                        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE\n                    )",
+      "row_count": 0
+    }
+  },
+  "indexes": [
+    {
+      "name": "idx_users_email",
+      "sql": "CREATE INDEX idx_users_email ON users(email)"
+    },
+    {
+      "name": "idx_users_status",
+      "sql": "CREATE INDEX idx_users_status ON users(status)"
+    },
+    {
+      "name": "idx_users_supabase_id",
+      "sql": "CREATE INDEX idx_users_supabase_id ON users(supabase_id)"
+    },
+    {
+      "name": "idx_sessions_token",
+      "sql": "CREATE INDEX idx_sessions_token ON user_sessions(session_token)"
+    },
+    {
+      "name": "idx_sessions_expires",
+      "sql": "CREATE INDEX idx_sessions_expires ON user_sessions(expires_at)"
+    },
+    {
+      "name": "idx_admin_sessions_token",
+      "sql": "CREATE INDEX idx_admin_sessions_token ON admin_sessions(session_token)"
+    },
+    {
+      "name": "idx_admin_sessions_expires",
+      "sql": "CREATE INDEX idx_admin_sessions_expires ON admin_sessions(expires_at)"
+    },
+    {
+      "name": "idx_analytics_metric",
+      "sql": "CREATE INDEX idx_analytics_metric ON system_analytics(metric_name)"
+    },
+    {
+      "name": "idx_analytics_timestamp",
+      "sql": "CREATE INDEX idx_analytics_timestamp ON system_analytics(timestamp)"
+    },
+    {
+      "name": "idx_api_usage_endpoint",
+      "sql": "CREATE INDEX idx_api_usage_endpoint ON api_usage(endpoint)"
+    },
+    {
+      "name": "idx_api_usage_timestamp",
+      "sql": "CREATE INDEX idx_api_usage_timestamp ON api_usage(timestamp)"
+    },
+    {
+      "name": "idx_user_credits_user_id",
+      "sql": "CREATE INDEX idx_user_credits_user_id ON user_credits(user_id)"
+    },
+    {
+      "name": "idx_credit_transactions_user_id",
+      "sql": "CREATE INDEX idx_credit_transactions_user_id ON credit_transactions(user_id)"
+    },
+    {
+      "name": "idx_credit_transactions_timestamp",
+      "sql": "CREATE INDEX idx_credit_transactions_timestamp ON credit_transactions(timestamp)"
+    },
+    {
+      "name": "idx_usage_analytics_user_id",
+      "sql": "CREATE INDEX idx_usage_analytics_user_id ON usage_analytics(user_id)"
+    },
+    {
+      "name": "idx_usage_analytics_timestamp",
+      "sql": "CREATE INDEX idx_usage_analytics_timestamp ON usage_analytics(timestamp)"
+    },
+    {
+      "name": "idx_sales_intelligence_user_id",
+      "sql": "CREATE INDEX idx_sales_intelligence_user_id ON sales_intelligence(user_id)"
+    },
+    {
+      "name": "idx_sales_intelligence_score",
+      "sql": "CREATE INDEX idx_sales_intelligence_score ON sales_intelligence(lead_score)"
+    },
+    {
+      "name": "idx_payment_transactions_user_id",
+      "sql": "CREATE INDEX idx_payment_transactions_user_id ON payment_transactions(user_id)"
+    },
+    {
+      "name": "idx_admin_users_id",
+      "sql": "CREATE INDEX idx_admin_users_id ON admin_users(id)"
+    },
+    {
+      "name": "idx_admin_users_username",
+      "sql": "CREATE INDEX idx_admin_users_username ON admin_users(username)"
+    },
+    {
+      "name": "idx_admin_users_email",
+      "sql": "CREATE INDEX idx_admin_users_email ON admin_users(email)"
+    },
+    {
+      "name": "idx_admin_users_status",
+      "sql": "CREATE INDEX idx_admin_users_status ON admin_users(status)"
+    },
+    {
+      "name": "idx_users_id",
+      "sql": "CREATE INDEX idx_users_id ON users(id)"
+    },
+    {
+      "name": "idx_user_sessions_id",
+      "sql": "CREATE INDEX idx_user_sessions_id ON user_sessions(id)"
+    },
+    {
+      "name": "idx_user_sessions_user_id",
+      "sql": "CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id)"
+    },
+    {
+      "name": "idx_user_sessions_user_agent",
+      "sql": "CREATE INDEX idx_user_sessions_user_agent ON user_sessions(user_agent)"
+    },
+    {
+      "name": "idx_admin_sessions_id",
+      "sql": "CREATE INDEX idx_admin_sessions_id ON admin_sessions(id)"
+    },
+    {
+      "name": "idx_admin_sessions_admin_id",
+      "sql": "CREATE INDEX idx_admin_sessions_admin_id ON admin_sessions(admin_id)"
+    },
+    {
+      "name": "idx_admin_sessions_user_agent",
+      "sql": "CREATE INDEX idx_admin_sessions_user_agent ON admin_sessions(user_agent)"
+    },
+    {
+      "name": "idx_system_analytics_id",
+      "sql": "CREATE INDEX idx_system_analytics_id ON system_analytics(id)"
+    },
+    {
+      "name": "idx_api_usage_id",
+      "sql": "CREATE INDEX idx_api_usage_id ON api_usage(id)"
+    },
+    {
+      "name": "idx_api_usage_user_id",
+      "sql": "CREATE INDEX idx_api_usage_user_id ON api_usage(user_id)"
+    },
+    {
+      "name": "idx_api_usage_admin_id",
+      "sql": "CREATE INDEX idx_api_usage_admin_id ON api_usage(admin_id)"
+    },
+    {
+      "name": "idx_api_usage_status_code",
+      "sql": "CREATE INDEX idx_api_usage_status_code ON api_usage(status_code)"
+    },
+    {
+      "name": "idx_api_usage_user_agent",
+      "sql": "CREATE INDEX idx_api_usage_user_agent ON api_usage(user_agent)"
+    },
+    {
+      "name": "idx_user_credits_id",
+      "sql": "CREATE INDEX idx_user_credits_id ON user_credits(id)"
+    },
+    {
+      "name": "idx_user_credits_updated_at",
+      "sql": "CREATE INDEX idx_user_credits_updated_at ON user_credits(updated_at)"
+    },
+    {
+      "name": "idx_credit_transactions_id",
+      "sql": "CREATE INDEX idx_credit_transactions_id ON credit_transactions(id)"
+    },
+    {
+      "name": "idx_usage_analytics_id",
+      "sql": "CREATE INDEX idx_usage_analytics_id ON usage_analytics(id)"
+    },
+    {
+      "name": "idx_sales_intelligence_id",
+      "sql": "CREATE INDEX idx_sales_intelligence_id ON sales_intelligence(id)"
+    },
+    {
+      "name": "idx_sales_intelligence_qualification_status",
+      "sql": "CREATE INDEX idx_sales_intelligence_qualification_status ON sales_intelligence(qualification_status)"
+    },
+    {
+      "name": "idx_payment_transactions_id",
+      "sql": "CREATE INDEX idx_payment_transactions_id ON payment_transactions(id)"
+    },
+    {
+      "name": "idx_payment_transactions_payment_provider",
+      "sql": "CREATE INDEX idx_payment_transactions_payment_provider ON payment_transactions(payment_provider)"
+    },
+    {
+      "name": "idx_payment_transactions_payment_id",
+      "sql": "CREATE INDEX idx_payment_transactions_payment_id ON payment_transactions(payment_id)"
+    },
+    {
+      "name": "idx_payment_transactions_order_id",
+      "sql": "CREATE INDEX idx_payment_transactions_order_id ON payment_transactions(order_id)"
+    },
+    {
+      "name": "idx_payment_transactions_payment_status",
+      "sql": "CREATE INDEX idx_payment_transactions_payment_status ON payment_transactions(payment_status)"
+    }
+  ],
+  "triggers": [],
+  "migration_complexity": "LOW"
+}

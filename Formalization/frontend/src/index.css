@@ -1,0 +1,9 @@
+/* Import improved theme system first */
+@import './styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import other styles after theme */
+@import './styles/components.css';

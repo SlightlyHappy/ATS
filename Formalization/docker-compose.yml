@@ -1,0 +1,231 @@
+# Resume Screening App - Complete Docker Compose Setup
+# Self-contained with all AI, OCR, and database capabilities
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: resume_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: resume_screening
+      POSTGRES_USER: resume_user
+      POSTGRES_PASSWORD: resume_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/schema_local.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - resume_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resume_user -d resume_screening"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Caching and Session Management
+  redis:
+    image: redis:7-alpine
+    container_name: resume_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - resume_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Ollama AI Service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: resume_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - resume_network
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Ollama Model Loader (pulls required models)
+  ollama-setup:
+    image: ollama/ollama:latest
+    container_name: resume_ollama_setup
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - resume_network
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    command: >
+      sh -c "
+        echo 'Pulling llama3 model...' &&
+        ollama pull llama3 &&
+        echo 'Pulling nomic-embed-text for embeddings...' &&
+        ollama pull nomic-embed-text &&
+        echo 'Models ready!'
+      "
+    restart: "no"
+
+  # Backend API Service with AI and OCR
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: resume_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Core Settings
+      - FLASK_ENV=development
+      - SECRET_KEY=local-development-secret-key-change-in-production
+      - PYTHONPATH=/app
+      - PORT=8000
+      
+      # Database
+      - DATABASE_URL=postgresql://resume_user:resume_password@database:5432/resume_screening
+      
+      # CORS & Security
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      
+      # AI Configuration
+      - OLLAMA_URL=http://ollama:11434
+      - DEFAULT_AI_MODEL=llama3
+      - AI_TIMEOUT=120
+      - ENABLE_AI_RESPONSE_CACHING=true
+      
+      # OCR Configuration
+      - TESSERACT_CMD=/usr/bin/tesseract
+      - OCR_LANGUAGES=eng
+      
+      # Redis Configuration
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_TIMEOUT=3600
+      
+      # File Processing
+      - MAX_CONTENT_LENGTH=50MB
+      - UPLOAD_FOLDER=/app/data/uploads
+      - PROCESSED_FOLDER=/app/data/processed
+      - ALLOWED_EXTENSIONS=pdf,docx,png,jpg,jpeg
+      
+      # Performance
+      - GUNICORN_WORKERS=2
+      - GUNICORN_THREADS=4
+      - WORKER_TIMEOUT=300
+      
+      # Logging
+      - LOG_LEVEL=INFO
+    
+    volumes:
+      - resume_uploads:/app/data/uploads
+      - resume_processed:/app/data/processed
+      - resume_storage:/app/data/resume_storage
+      - resume_logs:/app/logs
+    
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    
+    networks:
+      - resume_network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Frontend React Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: resume_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - resume_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Production Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: resume_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - resume_network
+    profiles:
+      - production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  resume_uploads:
+    driver: local
+  resume_processed:
+    driver: local
+  resume_storage:
+    driver: local
+  resume_logs:
+    driver: local
+
+networks:
+  resume_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

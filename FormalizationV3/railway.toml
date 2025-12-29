@@ -1,0 +1,40 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[env]
+FLASK_ENV = "production"
+PYTHONPATH = "/app"
+PYTHONUNBUFFERED = "1"
+# Memory optimization environment variables
+TOKENIZERS_PARALLELISM = "false"
+OMP_NUM_THREADS = "4"
+MKL_NUM_THREADS = "4"
+NUMEXPR_NUM_THREADS = "4"
+# Model optimization
+SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
+# Ollama configuration for Railway - Updated for Qwen2.5 7B
+OLLAMA_MODEL = "qwen2.5:7b"
+OLLAMA_BASE_URL = "http://localhost:11434"
+OLLAMA_AVAILABLE = "true"
+# Production flags
+RAILWAY_ENVIRONMENT = "production"
+# SSE and Keep-Alive Configuration
+SSE_KEEPALIVE_INTERVAL = "30"
+SSE_PROGRESS_INTERVAL = "5"
+SSE_MAX_CONNECTIONS = "100"
+# AI Processing Timeouts (seconds)
+AI_ANALYSIS_TIMEOUT = "300"
+AI_WORKER_TIMEOUT = "300"
+# Railway Resource Monitoring
+RAILWAY_ALLOCATED_MEMORY_GB = "32"
+RAILWAY_ALLOCATED_CPU_CORES = "32"
+# Connection and Request Handling
+MAX_CONTENT_LENGTH = "52428800"
+REQUEST_TIMEOUT = "300"
+KEEP_ALIVE_TIMEOUT = "5"

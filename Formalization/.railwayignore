@@ -1,0 +1,55 @@
+# Railway ignore file - exclude these from deployment
+
+# Development files
+.vscode/
+.git/
+*.log
+*.pyc
+__pycache__/
+.env.development
+.env.example
+package.json
+package.json.backup
+
+# Large directories that aren't needed for deployment
+sample_resumes/
+logs/
+backups/
+processed/
+uploads/
+resume_storage/
+secrets/
+
+# Documentation
+docs/
+*.md
+!RAILWAY_DEPLOYMENT.md
+
+# Scripts
+scripts/
+*.bat
+*.ps1
+manage.sh
+deploy*.sh
+deploy*.ps1
+setup-ssl.*
+
+# Docker files (not needed for Railway)
+docker/
+docker-compose*.yml
+frontend/Dockerfile
+supervisord.conf
+
+# Security and legal system (too large for deployment)
+HRlaw/
+security/
+
+# Development configuration
+.env.beta.example
+.env.production.example
+
+# Other build artifacts
+frontend/build/
+backend/models/
+backend/processed/
+backend/uploads/

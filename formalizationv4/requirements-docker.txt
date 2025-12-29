@@ -1,0 +1,117 @@
+# Docker-Optimized Requirements for HR Platform
+# This file is specifically optimized for Docker builds with pre-built wheels
+# and compatible package versions that install cleanly in containerized environments
+# 
+# Key optimizations:
+# - numpy, torch, faiss-cpu, tiktoken, sentencepiece installed separately in Dockerfile
+# - Uses specific package versions with available pre-built wheels
+# - Avoids compilation issues in Docker environment
+
+# Core Flask and Extensions - Updated for Python 3.13
+Flask==3.1.1
+Flask-SQLAlchemy==3.1.0
+Flask-Migrate==4.1.0
+Flask-CORS==6.0.1
+Flask-Limiter==3.12
+Flask-Caching==1.10.1
+Flask-SocketIO==5.3.6
+
+# Database - Updated for better performance
+psycopg2-binary==2.9.10
+SQLAlchemy==2.0.21
+alembic==1.13.1
+
+# HTTP and Async - Latest versions
+aiohttp==3.10.11
+requests==2.32.3
+
+# Background Tasks and Scheduling
+schedule==1.2.0
+
+# File Processing - Modern versions for Python 3.13 (compatible versions)
+PyPDF2==3.0.1
+python-docx==1.1.2
+pdfplumber==0.11.4
+PyMuPDF==1.25.1
+pdfminer.six==20231228
+docx2txt==0.8
+# numpy installed separately in Dockerfile for better build control
+pandas>=2.0.0,<2.3.0
+chardet==5.2.0
+python-pptx==1.0.2
+openpyxl==3.1.5
+xlrd==2.0.1
+rarfile==4.2
+easyocr==1.7.1
+pytesseract==0.3.13
+Pillow>=10.0.0,<12.0.0
+Werkzeug>=3.1.0
+
+# Environment and Configuration
+python-dotenv==1.0.0
+
+# Data Processing and Validation
+marshmallow==3.20.1
+jsonschema==4.19.1
+
+# Logging and Monitoring
+structlog==23.1.0
+
+# Redis (for caching and job queue)
+redis==5.0.0
+
+# Testing - Updated for Python 3.13
+pytest==8.3.4
+pytest-cov==6.0.0
+pytest-asyncio==0.24.0
+python-socketio[client]==5.8.0
+
+# Development Tools - Latest versions
+black==24.10.0
+flake8==7.1.1
+isort==5.13.2
+
+# Production Server - Enhanced performance
+gunicorn==23.0.0
+eventlet==0.37.0
+
+# Security - Latest stable versions
+cryptography==44.0.0
+bcrypt==4.2.1
+PyJWT==2.10.1
+
+# Production Monitoring and Health - Updated
+psutil==6.1.0
+APScheduler==3.11.0
+prometheus-client==0.21.1
+
+# Enhanced Error Tracking
+sentry-sdk[flask]==1.38.0
+
+# Rate Limiting and Security
+slowapi==0.1.9
+itsdangerous==2.2.0
+
+# RAG and Legal Knowledge Base - Docker-optimized versions
+# These are pre-built packages that install cleanly in Docker
+sentence-transformers==2.2.2
+huggingface-hub<0.17.0,>=0.8.0
+chromadb==0.4.15
+langchain==0.1.17
+langchain-community==0.0.38
+
+# Core ML packages - Use versions with pre-built wheels compatible with Python 3.13
+transformers==4.29.2
+# torch installed separately in Dockerfile with CPU-only wheels
+scikit-learn==1.4.0
+
+# Vector database packages - Compatible versions
+# faiss-cpu installed separately in Dockerfile
+# tiktoken installed separately in Dockerfile
+
+# Text processing with pre-built wheels
+# sentencepiece installed separately in Dockerfile
+
+# Enhanced Text Processing for Legal Documents
+unstructured==0.10.30
+nltk==3.8.1

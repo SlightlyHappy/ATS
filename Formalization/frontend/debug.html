@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Debug Info</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .env-var { background: #f0f0f0; padding: 5px; margin: 5px 0; }
+        .status-ok { color: green; }
+        .status-error { color: red; }
+        .status-warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Debug Information</h1>
+    
+    <div class="debug-section">
+        <h2>Environment Variables Needed</h2>
+        <div class="env-var">
+            <strong>REACT_APP_API_URL</strong> - Backend API URL (e.g., https://your-backend-service.railway.app)
+        </div>
+        <div class="env-var">
+            <strong>NODE_ENV</strong> - Should be "production" (Set in railway.toml)
+        </div>
+        <div class="env-var">
+            <strong>GENERATE_SOURCEMAP</strong> - Should be "false" for production (Set in railway.toml)
+        </div>
+    </div>
+
+    <div class="debug-section">
+        <h2>Build Time Variables (Check Railway Build Logs)</h2>
+        <p>These variables must be available during the Docker build process:</p>
+        <ul>
+            <li>REACT_APP_API_URL - Gets baked into the build</li>
+            <li>NODE_ENV - Controls optimization</li>
+            <li>GENERATE_SOURCEMAP - Controls sourcemap generation</li>
+        </ul>
+    </div>
+
+    <div class="debug-section">
+        <h2>Container Status</h2>
+        <p id="container-status">Container is running and serving static files</p>
+    </div>
+
+    <div class="debug-section">
+        <h2>Next Steps to Debug</h2>
+        <ol>
+            <li>Check Railway deployment logs for build errors</li>
+            <li>Verify REACT_APP_API_URL is set in Railway environment</li>
+            <li>Check if build folder was created properly</li>
+            <li>Verify nginx is serving files correctly</li>
+        </ol>
+    </div>
+
+    <script>
+        // Simple client-side check
+        fetch('/health')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('container-status').className = 'status-ok';
+                    document.getElementById('container-status').textContent = 'Health check OK - Container is working';
+                } else {
+                    document.getElementById('container-status').className = 'status-warning';
+                    document.getElementById('container-status').textContent = 'Health check failed - Check nginx config';
+                }
+            })
+            .catch(error => {
+                document.getElementById('container-status').className = 'status-error';
+                document.getElementById('container-status').textContent = 'Cannot reach health endpoint - ' + error.message;
+            });
+    </script>
+</body>
+</html>

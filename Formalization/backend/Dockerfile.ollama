@@ -1,0 +1,82 @@
+# Backend Dockerfile with Ollama Support
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PYTHONPATH=/app
+
+# Install system dependencies including Ollama requirements
+RUN apt-get update && apt-get install -y \
+    # OCR dependencies
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    # Document processing
+    poppler-utils \
+    libpoppler-cpp-dev \
+    # System utilities
+    curl \
+    wget \
+    gcc \
+    g++ \
+    # Additional dependencies
+    libjpeg-dev \
+    libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# Set working directory
+WORKDIR /app
+
+# Create necessary directories
+RUN mkdir -p \
+    /app/data/uploads \
+    /app/data/processed \
+    /app/data/resume_storage \
+    /app/logs \
+    /app/temp
+
+# Copy requirements and install Python dependencies
+COPY requirements.railway.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.railway.txt
+
+# Copy application code
+COPY . .
+
+# Create startup script that starts both Ollama and the app
+RUN cat > /app/start_with_ollama.sh << 'EOF'
+#!/bin/bash
+
+# Start Ollama in the background
+ollama serve &
+OLLAMA_PID=$!
+
+# Wait for Ollama to be ready
+echo "Waiting for Ollama to start..."
+while ! curl -s http://localhost:11434/api/version > /dev/null; do
+    sleep 1
+done
+
+# Pull the required model
+echo "Pulling Ollama model..."
+ollama pull qwen2.5:7b
+
+# Start the Flask application
+echo "Starting Flask application..."
+python start.py
+
+# If Flask app exits, kill Ollama
+kill $OLLAMA_PID
+EOF
+
+RUN chmod +x /app/start_with_ollama.sh
+
+# Expose port
+EXPOSE 8000
+
+# Use the startup script
+CMD ["/app/start_with_ollama.sh"]

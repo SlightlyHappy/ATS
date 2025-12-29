@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Bear Systems Corporate Light Theme */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+    --primary: 43 74% 66%;        /* Bear Systems Gold */
+    --primary-foreground: 0 0% 15%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 50% 27%;          /* Bear Systems Deep Red */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 88%;
+    --input: 0 0% 94%;
+    --ring: 43 74% 66%;
+    --radius: 0.75rem;
+    --chart-1: 43 74% 66%;        /* Gold */
+    --chart-2: 0 50% 27%;         /* Deep Red */
+    --chart-3: 0 0% 25%;          /* Charcoal */
+    --chart-4: 173 58% 39%;       /* Teal accent */
+    --chart-5: 27 87% 67%;        /* Warm orange */
+    
+    /* Bear Systems Extended Palette */
+    --bs-gold: 43 74% 66%;
+    --bs-gold-light: 43 74% 80%;
+    --bs-gold-dark: 43 74% 50%;
+    --bs-red: 0 50% 27%;
+    --bs-red-light: 0 50% 45%;
+    --bs-charcoal: 0 0% 20%;
+    --bs-platinum: 0 0% 95%;
+    --bs-silver: 0 0% 75%;
+  }
+
+  .dark {
+    /* Bear Systems Corporate Dark Theme */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 43 74% 66%;        /* Bear Systems Gold */
+    --primary-foreground: 0 0% 15%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 50% 45%;          /* Lighter red for dark mode */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 43 74% 66%;
+    --chart-1: 43 74% 66%;        /* Gold */
+    --chart-2: 0 50% 45%;         /* Lighter Red */
+    --chart-3: 0 0% 80%;          /* Light gray */
+    --chart-4: 173 58% 50%;       /* Brighter teal */
+    --chart-5: 27 87% 67%;        /* Warm orange */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Enhanced Typography Scale */
+  h1 {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl font-semibold tracking-tight;
+  }
+  
+  h4 {
+    @apply text-lg font-semibold tracking-tight;
+  }
+  
+  p {
+    @apply text-sm md:text-base leading-relaxed;
+  }
+  
+  small {
+    @apply text-xs text-muted-foreground;
+  }
+}
+
+@layer components {
+  /* Enhanced Card System */
+  .card-enhanced {
+    @apply bg-card border rounded-lg shadow-sm transition-all duration-200;
+    @apply hover:shadow-md hover:scale-[1.01];
+  }
+  
+  .stat-card {
+    @apply p-6 bg-gradient-to-br from-background to-muted/20;
+    @apply border rounded-lg shadow-sm transition-all duration-200;
+    @apply hover:shadow-lg hover:scale-[1.02];
+  }
+  
+  .chart-container {
+    @apply bg-card border rounded-lg p-4;
+    @apply shadow-sm transition-all duration-200;
+  }
+  
+  /* Interactive Elements */
+  .hover-lift {
+    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-md;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-200 hover:shadow-lg hover:shadow-primary/25;
+  }
+  
+  /* Navigation Enhancements */
+  .nav-item {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium;
+    @apply transition-all duration-200 hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  .nav-item-active {
+    @apply bg-accent text-accent-foreground;
+  }
+  
+  .nav-item-inactive {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+  
+  /* Form Enhancements */
+  .form-section {
+    @apply space-y-4 p-6 border rounded-lg bg-card;
+  }
+  
+  .form-group {
+    @apply space-y-2;
+  }
+  
+  /* Button Enhancements */
+  .btn-enhanced {
+    @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-md;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  
+  /* Data Display */
+  .data-table-enhanced {
+    @apply border-separate border-spacing-0 rounded-lg overflow-hidden;
+  }
+  
+  .table-header-enhanced {
+    @apply bg-muted/50 border-b font-medium text-left;
+  }
+  
+  .table-row-enhanced {
+    @apply hover:bg-muted/50 transition-colors border-b;
+  }
+  
+  /* Loading States */
+  .skeleton-enhanced {
+    @apply animate-pulse bg-muted rounded;
+  }
+  
+  /* Bear Systems Specific Animations */
+  .bear-fade-in {
+    animation: bearFadeIn 0.8s ease-out forwards;
+  }
+  
+  .bear-slide-up {
+    animation: bearSlideUp 0.6s ease-out forwards;
+  }
+  
+  .bear-scale-in {
+    animation: bearScaleIn 0.5s ease-out forwards;
+  }
+  
+  .bear-glow {
+    @apply transition-all duration-300;
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+  
+  .bear-glow:hover {
+    box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.15);
+  }
+  
+  .elegant-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  }
+  
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+@layer utilities {
+  /* Bear Systems Animation Keyframes */
+  @keyframes bearFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes bearSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes bearScaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  @keyframes glow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  /* Scroll-based animations */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-out;
+  }
+  
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
