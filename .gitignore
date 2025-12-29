@@ -1,0 +1,143 @@
+# Environment Variables and Secrets
+.env
+.env.*
+!.env.example
+*.enc
+api_keys.enc
+secrets/
+security/
+.api_keys
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.log
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+
+# Production Build
+frontend/build/
+frontend/dist/
+frontend/.next/
+frontend/out/
+v*/build/
+v*/dist/
+v*/.next/
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.zencoder/
+.zenflow/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads and Processed Files
+uploads/
+processed/
+resume_storage/
+sample_resumes/
+backups/
+
+# Model and Cache Files
+model_cache/
+*.index
+*.pkl
+*.h5
+*.onnx
+hr_legal_faiss.index
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# OS Files
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.hypothesis/
+.pytest_cache/
+
+# Deployment
+.vercel
+.railway
+railway.json
+
+# Backups
+*.backup
+*.bak
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Certificate files
+*.pem
+*.key
+*.cert
+
+# Personal notes and drafts
+NOTES.md
+TODO.md
